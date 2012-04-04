@@ -122,6 +122,7 @@ cat > /tmp/topicA.txt <<EOT
 Add feature set A
 
 More details about feature set A here...
+This was really a lot of work!
 EOT
 ../gitopic -d --close /tmp/topicA.txt
 
@@ -176,6 +177,8 @@ cat >topicB.txt <<EOT
 Add feature set B
 
 More details about feature set B here...
+
+Read more about it below.
 EOT
 ../gitopic --close topicB.txt
 
