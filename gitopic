@@ -24,7 +24,9 @@ parser = OptionParser(usage="usage: %prog [options]")
 parser.add_option("-l", "--list", action="store_true", dest="list", default=False,
     help="list all topic branches")
 parser.add_option("--log", action="store_true", dest="log", default=False,
-    help="show log of completed topic branches")
+    help="show one-line log of completed topic branches")
+parser.add_option("--llog", action="store_true", dest="llog", default=False,
+    help="show detailed log of completed topic branches")
 parser.add_option("--open", action="store", dest="newname", default=None,
     help="open a new topic branch with the specified name")
 parser.add_option("--close", action="store", dest="docfile", default=None,
@@ -143,18 +145,20 @@ if options.list:
     exit(0)
 
 # Show log of completed topic branches, if requested.
-if options.log:
+if options.log or options.llog:
     log = git('rev-list','--merges',
-        '--format="%at<##>%cn<##>%s"<!!>',"%s/master" % options.remote,
+        '--format=%at<##>%cn<##>%s%n%b<&&>',"%s/master" % options.remote,
         exitOnErrorMsg="unable to access commit log.")
-    for line in log.stdout.split('<!!>\n'):
-        rows = line.split('\n')
-        if rows[0].startswith('commit'):
-            tokens = rows[1][1:-1].split("<##>")
+    for entry in log.stdout.split('<&&>\n'):
+        rows = entry.splitlines()
+        if rows and rows[0].startswith('commit'):
+            tokens = rows[1][1:].split("<##>")
             when = time.strftime("%d-%b-%Y",time.localtime(float(tokens[0])))
             who = tokens[1]
-            what = tokens[2].split('\n')[0]
+            what = tokens[2]
             print "%s, %s: %s" % (when,who,what)
+            if options.llog:
+                print '\n  ' + '\n  '.join(rows[2:]) + '\n'            
     exit(0)
 
 # Open a new topic branch, if requested.
