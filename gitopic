@@ -113,13 +113,13 @@ if ahead > 0:
 # List all topic branches, if requested.
 if options.list:
     branches = git('for-each-ref','--shell','--sort=-committerdate',
-        '--format="%(objecttype) %(objectname) %(refname) %(committerdate:relative) %(committername)"',
+        '--format=%(objecttype) %(objectname) %(refname) %(committerdate:relative) %(committername)',
         exitOnErrorMsg="unable to browse branches.")
     localBranches = [ ]
     remoteBranches = [ ]
     remotePrefix = "refs/remotes/%s/" % options.remote
     for line in branches.stdout.split('\n'):
-        tokens = shlex.split(line[1:-1])
+        tokens = shlex.split(line)
         if len(tokens) > 0 and tokens[0] == 'commit':
             (sha1,refname,when,who) = tokens[1:]
             if refname.endswith('/master'):
