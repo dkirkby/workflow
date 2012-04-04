@@ -122,7 +122,7 @@ if options.list:
         tokens = shlex.split(line)
         if len(tokens) > 0 and tokens[0] == 'commit':
             (sha1,refname,when,who) = tokens[1:]
-            if refname.endswith('/master'):
+            if refname.endswith('/master') or refname.endswith('/HEAD'):
                 continue
             if refname.startswith(remotePrefix):
                 suffix = " [%+d,%-d]" % (span('%s/master' % options.remote,refname),
