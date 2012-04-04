@@ -166,54 +166,7 @@ git fetch --quiet --prune
 if [ "$stage" -eq 5 ] ; then exit ; fi
 
 ###############################################################################
-## Stage 6: bob merges his completed topic C back into master
-###############################################################################
-
-sleep 1
-
-cd $bob
-cat >topicC.txt <<EOT
-Add feature set C
-
-More details about feature set C here...
-EOT
-../gitopic --close topicC.txt
-
-cd $alice
-git fetch --quiet --prune
-
-if [ "$stage" -eq 6 ] ; then exit ; fi
-
-###############################################################################
-## Stage 7: alice tries to rebase her topic B on top of topic C,
-## which leads to a conflict
-###############################################################################
-
-sleep 1
-
-cd $alice
-../gitopic --update
-
-if [ "$stage" -eq 7 ] ; then exit ; fi
-
-###############################################################################
-## Stage 8: resolve the conflict between topics B and C and finish the rebase
-###############################################################################
-
-cd $alice
-git checkout --theirs fileBC
-git add fileBC
-git rebase --continue
-
-git push --force origin Topic_B
-
-cd $bob
-git fetch --quiet --prune
-
-if [ "$stage" -eq 8 ] ; then exit ; fi
-
-###############################################################################
-## Stage 9: alice merges her completed topic B back into master
+## Stage 6: alice merges her completed topic B back into master
 ###############################################################################
 
 sleep 1
@@ -227,4 +180,51 @@ EOT
 ../gitopic --close topicB.txt
 
 cd $bob
+git fetch --quiet --prune
+
+if [ "$stage" -eq 6 ] ; then exit ; fi
+
+###############################################################################
+## Stage 7: bob tries to rebase his topic C on top of topic B,
+## which leads to a conflict
+###############################################################################
+
+sleep 1
+
+cd $bob
+../gitopic --update
+
+if [ "$stage" -eq 7 ] ; then exit ; fi
+
+###############################################################################
+## Stage 8: resolve the conflict between topics B and C and finish the rebase
+###############################################################################
+
+cd $bob
+git checkout --theirs fileBC
+git add fileBC
+git rebase --continue
+
+git push --force origin Topic_C
+
+cd $alice
+git fetch --quiet --prune
+
+if [ "$stage" -eq 8 ] ; then exit ; fi
+
+###############################################################################
+## Stage 9: alice merges her completed topic B back into master
+###############################################################################
+
+sleep 1
+
+cd $bob
+cat >topicC.txt <<EOT
+Add feature set C
+
+More details about feature set C here...
+EOT
+../gitopic --close topicC.txt
+
+cd $alice
 git fetch --quiet --prune
