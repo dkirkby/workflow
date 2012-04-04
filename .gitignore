@@ -1,0 +1,4 @@
+# ignore directories created by sandbox.sh
+*.alice/
+*.bob/
+*.remote/
