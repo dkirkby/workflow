@@ -152,7 +152,7 @@ if options.log or options.llog:
     for entry in log.stdout.split('<&&>\n'):
         rows = entry.splitlines()
         if rows and rows[0].startswith('commit'):
-            tokens = rows[1][1:].split("<##>")
+            tokens = rows[1].split("<##>")
             when = time.strftime("%d-%b-%Y",time.localtime(float(tokens[0])))
             who = tokens[1]
             what = tokens[2]
