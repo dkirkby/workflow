@@ -101,7 +101,7 @@ currentBranch = head.stdout.strip().replace('refs/heads/','')
 
 # Fetch any updates from the remote repository (if this fails, we are probably offline)
 if not options.offline:
-    git('fetch','--prune',
+    git('fetch','--prune',options.remote,
         exitOnErrorMsg="unable to fetch remote updates. Use --offline if you are offline.")
 
 # Check that the local master is not ahead of the remote
