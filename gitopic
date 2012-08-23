@@ -164,7 +164,7 @@ if options.log or options.llog:
 # Open a new topic branch, if requested.
 if options.newname:
     # check for a valid branch name
-    valid = git('check-ref-format','/refs/heads/%s' % options.newname)
+    valid = git('check-ref-format','refs/heads/%s' % options.newname)
     if valid.returncode != 0:
         print "gitopic: invalid topic branch name '%s'" % options.newname
         exit(-1)
