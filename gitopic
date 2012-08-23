@@ -41,6 +41,8 @@ parser.add_option("-o", "--origin", action="store", dest="remote", default="orig
     help="alias of remote repository to use")
 parser.add_option("--git-dir", action="store", dest="gitdir", default=None,
     help="directory path to the repository")
+parser.add_option("--abandon", action="store_true", dest="abandon", default=False,
+    help="abandon the current topic branch")
 
 (options,args) = parser.parse_args()
 
@@ -164,7 +166,7 @@ if options.log or options.llog:
 # Open a new topic branch, if requested.
 if options.newname:
     # check for a valid branch name
-    valid = git('check-ref-format','/refs/heads/%s' % options.newname)
+    valid = git('check-ref-format','refs/heads/%s' % options.newname)
     if valid.returncode != 0:
         print "gitopic: invalid topic branch name '%s'" % options.newname
         exit(-1)
@@ -237,3 +239,18 @@ if options.update:
     print "Successfully updated topic branch '%s'" % currentBranch
     if options.offline:
         print "Use the following command the next time you are online: git",' '.join(pushArgs)
+
+# Abandons the current topic branch, if requested.
+if options.abandon:
+    # checkout the master branch, updating if necessary
+    master()
+    # delete the topic branch
+    git('branch','-D',currentBranch)
+    # push changes back to the remote repo
+    pushArgs = ['push',options.remote,':%s' % currentBranch]
+    if not options.offline:
+        git(*pushArgs,exitOnErrorMsg="unable to push changes to remote repository.")
+    print "Abandoned topic branch '%s'" % currentBranch
+    if options.offline:
+        print "Use the following command the next time you are online: git",' '.join(pushArgs)
+    exit(0)
